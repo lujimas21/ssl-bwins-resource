@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>bwin · 信息卡片页</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      background: #f5f9fc;
+      color: #1e3a3f;
+      line-height: 1.6;
+      padding: 20px 16px 40px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    /* 主视觉 / hero */
+    .hero {
+      background: linear-gradient(145deg, #0f4a56 0%, #1b6a7a 100%);
+      border-radius: 28px;
+      padding: 36px 28px;
+      margin-bottom: 32px;
+      color: #e6f3f5;
+      box-shadow: 0 8px 24px rgba(7, 64, 78, 0.12);
+    }
+
+    .hero h1 {
+      font-size: 2.2rem;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      margin-bottom: 12px;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      max-width: 660px;
+      opacity: 0.9;
+    }
+
+    .hero-extra {
+      margin-top: 22px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 24px;
+      font-size: 0.95rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      padding-top: 22px;
+    }
+
+    .hero-extra span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hero-extra span::before {
+      content: "▹";
+      color: #9fd1da;
+      font-size: 1.1rem;
+    }
+
+    /* 网格卡片布局 */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+
+    @media (min-width: 600px) {
+      .grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (min-width: 920px) {
+      .grid {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 24px 20px 26px;
+      box-shadow: 0 4px 12px rgba(0, 20, 30, 0.04);
+      border: 1px solid #ddecf0;
+      transition: box-shadow 0.2s ease, transform 0.15s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 8px 22px rgba(0, 60, 75, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .card h3 {
+      font-size: 1.25rem;
+      font-weight: 500;
+      margin-bottom: 10px;
+      color: #15505e;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card h3::before {
+      content: "◆";
+      font-size: 0.9rem;
+      color: #2b8c9e;
+    }
+
+    .card p {
+      color: #2c4d54;
+      font-size: 0.95rem;
+      margin-bottom: 12px;
+    }
+
+    .card ul {
+      list-style: none;
+      padding: 0;
+      margin: 6px 0 0;
+    }
+
+    .card li {
+      position: relative;
+      padding-left: 18px;
+      margin-bottom: 6px;
+      font-size: 0.9rem;
+      color: #1e474f;
+    }
+
+    .card li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: #3c9aaa;
+      font-weight: bold;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #d5edf2;
+      color: #0b4b58;
+      padding: 2px 12px;
+      border-radius: 30px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      margin-bottom: 10px;
+    }
+
+    /* 自然链接段落 */
+    .link-paragraph {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 28px 24px;
+      margin-bottom: 28px;
+      border: 1px solid #ddecf0;
+      box-shadow: 0 4px 12px rgba(0, 20, 30, 0.04);
+    }
+
+    .link-paragraph p {
+      font-size: 1rem;
+      color: #1e3a3f;
+      max-width: 800px;
+    }
+
+    .link-paragraph a {
+      color: #1b7a8c;
+      text-decoration: none;
+      font-weight: 500;
+      border-bottom: 1px solid #8fc5d0;
+      padding-bottom: 1px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .link-paragraph a:hover {
+      color: #0d5565;
+      border-bottom-color: #0d5565;
+    }
+
+    /* 提示 / 附注 */
+    .note-box {
+      background: #e4f0f4;
+      border-radius: 18px;
+      padding: 20px 22px;
+      margin-bottom: 28px;
+      border-left: 5px solid #2b8c9e;
+    }
+
+    .note-box strong {
+      color: #12434e;
+      font-weight: 600;
+    }
+
+    .note-box p {
+      color: #1f4149;
+      font-size: 0.95rem;
+    }
+
+    /* FAQ 摘要 */
+    .faq-mini {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    @media (min-width: 600px) {
+      .faq-mini {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .faq-item {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 18px 18px 16px;
+      border: 1px solid #d0e3e8;
+    }
+
+    .faq-item q {
+      font-weight: 500;
+      color: #0f4856;
+      display: block;
+      margin-bottom: 6px;
+      font-style: normal;
+    }
+
+    .faq-item p {
+      font-size: 0.9rem;
+      color: #2a4d55;
+    }
+
+    /* 页脚 */
+    .footer-note {
+      text-align: center;
+      color: #5f818a;
+      font-size: 0.85rem;
+      border-top: 1px solid #d2e3e8;
+      padding-top: 28px;
+      margin-top: 14px;
+    }
+
+    .footer-note a {
+      color: #1b6f7e;
+      text-decoration: none;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid #d2e3e8;
+      margin: 12px 0 24px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- 主视觉 -->
+  <div class="hero">
+    <h1>bwin · 查询对照卡</h1>
+    <p>日常信息整理，从浏览、比对到延伸参考，更适合随手翻阅的说明页。</p>
+    <div class="hero-extra">
+      <span>板块：用途 · 人群 · 场景</span>
+      <span>基调：平实 · 清晰</span>
+      <span>配色：蓝绿点缀</span>
+    </div>
+  </div>
+
+  <!-- 用途卡片 × 3 -->
+  <div class="grid">
+    <div class="card">
+      <div class="badge">用途 ①</div>
+      <h3>信息对照</h3>
+      <p>整理条目与分类，方便快速浏览和横向比较。适合在阅读资料时作为辅助参考。</p>
+      <ul>
+        <li>功能模块归类</li>
+        <li>关键词摘要</li>
+        <li>差异点列举</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="badge">用途 ②</div>
+      <h3>日常查询</h3>
+      <p>将分散的内容归纳成卡片，日常需要回顾时不必重新翻阅原文。</p>
+      <ul>
+        <li>常用说明汇总</li>
+        <li>条目式备忘</li>
+        <li>简洁标签检索</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="badge">用途 ③</div>
+      <h3>延伸阅读</h3>
+      <p>基于主题衍生出的相关参考，包括背景、常见问题与补充说明。</p>
+      <ul>
+        <li>相关背景概述</li>
+        <li>常见疑问整理</li>
+        <li>外部链接参考</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 适合人群 (双列卡片) -->
+  <div class="grid" style="margin-bottom: 28px;">
+    <div class="card">
+      <h3>📘 浏览型读者</h3>
+      <p>喜欢结构清晰的归纳，不需要从长篇内容中自行提炼信息。</p>
+    </div>
+    <div class="card">
+      <h3>📋 对照型用户</h3>
+      <p>需要同时查看多个模块的要点，方便横向对比和记录。</p>
+    </div>
+  </div>
+
+  <!-- 自然链接段落 (嵌入唯一 a 标签, 文本 = bwin) -->
+  <div class="link-paragraph">
+    <p>
+      如果你正在了解某个平台的基础信息或功能分类，这份卡片页收录了日常查询时常用的要点，方便快速对照。
+      其中一项核心参考来源为 <a href="https://ssl-bwins.com">bwin</a>，其提供的内容框架可以帮助用户在浏览过程中建立更完整的认知脉络。
+      本页围绕该主题做了进一步整理，侧重信息结构化与延伸阅读。
+    </p>
+  </div>
+
+  <!-- 场景补充 + 提示 -->
+  <div class="note-box">
+    <strong>使用场景提示</strong>
+    <p>适合放在浏览器标签页或收藏夹中，作为快速查阅页。卡片内容以摘要和分类为主，建议结合原文或官方信息进行深度阅读。所有条目均经过筛选和压缩，便于日常回顾。</p>
+  </div>
+
+  <!-- FAQ 摘要 -->
+  <h2 style="font-weight: 500; font-size: 1.3rem; margin-bottom: 12px; color: #12434e;">常见问题摘要</h2>
+  <div class="faq-mini">
+    <div class="faq-item">
+      <q>这些卡片会定期更新吗？</q>
+      <p>内容基于当前整理，后续如有变更会同步调整卡片条目和分类。</p>
+    </div>
+    <div class="faq-item">
+      <q>我可以直接复制卡片内容吗？</q>
+      <p>卡片为摘要性质，复制后建议核对原始来源以保证准确性。</p>
+    </div>
+    <div class="faq-item">
+      <q>为什么只有三个用途分类？</q>
+      <p>当前聚焦最常用的三种场景，后续可根据需要扩展其他类别。</p>
+    </div>
+    <div class="faq-item">
+      <q>有推荐的使用流程吗？</q>
+      <p>先浏览主视觉了解方向，再对照卡片细节，最后通过链接段落延伸阅读。</p>
+    </div>
+  </div>
+
+  <!-- 底部分隔 + 页脚 -->
+  <hr>
+  <div class="footer-note">
+    <span>信息卡片版 · 蓝绿点缀 · 内容仅供对照参考</span><br>
+    <span style="opacity:0.7;">页面对应参考源 · <a href="https://ssl-bwins.com">bwin</a></span>
+  </div>
+
+</div>
+</body>
+</html>
